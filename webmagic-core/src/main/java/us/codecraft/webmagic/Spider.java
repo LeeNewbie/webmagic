@@ -71,17 +71,17 @@ public class Spider implements Runnable, Task {
     protected Site site;
 
     protected String uuid;
-
+    //调度器
     protected Scheduler scheduler = new QueueScheduler();
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
-
+    //包装线程池
     protected CountableThreadPool threadPool;
-
+    //线程池
     protected ExecutorService executorService;
-
+    //默认线程数
     protected int threadNum = 1;
-
+    //爬虫状态
     protected AtomicInteger stat = new AtomicInteger(STAT_INIT);
 
     protected boolean exitWhenComplete = true;
@@ -91,9 +91,9 @@ public class Spider implements Runnable, Task {
     protected final static int STAT_RUNNING = 1;
 
     protected final static int STAT_STOPPED = 2;
-
+    //是否继续爬取新的url
     protected boolean spawnUrl = true;
-
+    //关闭相关线程 标识
     protected boolean destroyWhenExit = true;
 
     private ReentrantLock newUrlLock = new ReentrantLock();
