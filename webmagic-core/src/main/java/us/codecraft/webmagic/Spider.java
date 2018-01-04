@@ -59,15 +59,15 @@ import java.util.concurrent.locks.ReentrantLock;
  * @since 0.1.0
  */
 public class Spider implements Runnable, Task {
-
+    //下载器
     protected Downloader downloader;
-
+    //保存处理
     protected List<Pipeline> pipelines = new ArrayList<Pipeline>();
-
+    //页面解析
     protected PageProcessor pageProcessor;
-
+    //初始请求页面
     protected List<Request> startRequests;
-
+    //处理站点
     protected Site site;
 
     protected String uuid;
