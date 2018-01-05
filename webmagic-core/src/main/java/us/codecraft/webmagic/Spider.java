@@ -95,17 +95,17 @@ public class Spider implements Runnable, Task {
     protected boolean spawnUrl = true;
     //关闭相关线程 标识
     protected boolean destroyWhenExit = true;
-
+    //重入锁
     private ReentrantLock newUrlLock = new ReentrantLock();
-
+    //重入锁条件
     private Condition newUrlCondition = newUrlLock.newCondition();
-
+    //监听器
     private List<SpiderListener> spiderListeners;
-
+    //抓取页面统计
     private final AtomicLong pageCount = new AtomicLong(0);
-
+    //爬虫启动时间
     private Date startTime;
-
+    //等待新爬虫链接间隔时间
     private int emptySleepTime = 30000;
 
     /**
@@ -275,6 +275,7 @@ public class Spider implements Runnable, Task {
         return this;
     }
 
+    //初始化处理
     protected void initComponent() {
         if (downloader == null) {
             this.downloader = new HttpClientDownloader();
@@ -299,12 +300,17 @@ public class Spider implements Runnable, Task {
         startTime = new Date();
     }
 
+    //启动爬虫
     @Override
     public void run() {
+        //检测爬虫状态
         checkRunningStat();
+        //初始化
         initComponent();
         logger.info("Spider {} started!",getUUID());
+        //开始爬虫线程--
         while (!Thread.currentThread().isInterrupted() && stat.get() == STAT_RUNNING) {
+            //调度器中取出 请求
             final Request request = scheduler.poll(this);
             if (request == null) {
                 if (threadPool.getThreadAlive() == 0 && exitWhenComplete) {
@@ -338,6 +344,7 @@ public class Spider implements Runnable, Task {
         logger.info("Spider {} closed! {} pages downloaded.", getUUID(), pageCount.get());
     }
 
+    //页面爬取处理出错
     protected void onError(Request request) {
         if (CollectionUtils.isNotEmpty(spiderListeners)) {
             for (SpiderListener spiderListener : spiderListeners) {
@@ -346,6 +353,7 @@ public class Spider implements Runnable, Task {
         }
     }
 
+    //页面爬取处理成功
     protected void onSuccess(Request request) {
         if (CollectionUtils.isNotEmpty(spiderListeners)) {
             for (SpiderListener spiderListener : spiderListeners) {
@@ -353,7 +361,7 @@ public class Spider implements Runnable, Task {
             }
         }
     }
-
+    //检测爬虫运行状态
     private void checkRunningStat() {
         while (true) {
             int statNow = stat.get();
@@ -365,7 +373,7 @@ public class Spider implements Runnable, Task {
             }
         }
     }
-
+    //关闭
     public void close() {
         destroyEach(downloader);
         destroyEach(pageProcessor);
@@ -399,7 +407,7 @@ public class Spider implements Runnable, Task {
             }
         }
     }
-
+    //执行请求--下载页面--
     private void processRequest(Request request) {
         Page page = downloader.download(request, this);
         if (page.isDownloadSuccess()){
@@ -408,7 +416,7 @@ public class Spider implements Runnable, Task {
             onDownloaderFail(request);
         }
     }
-
+    //处理下载成功页面
     private void onDownloadSuccess(Request request, Page page) {
         if (site.getAcceptStatCode().contains(page.getStatusCode())){
             pageProcessor.process(page);
@@ -424,7 +432,7 @@ public class Spider implements Runnable, Task {
         sleep(site.getSleepTime());
         return;
     }
-
+    //处理下载失败页面
     private void onDownloaderFail(Request request) {
         if (site.getCycleRetryTimes() == 0) {
             sleep(site.getSleepTime());
@@ -433,7 +441,7 @@ public class Spider implements Runnable, Task {
             doCycleRetry(request);
         }
     }
-
+    //重试处理
     private void doCycleRetry(Request request) {
         Object cycleTriedTimesObject = request.getExtra(Request.CYCLE_TRIED_TIMES);
         if (cycleTriedTimesObject == null) {
@@ -455,7 +463,7 @@ public class Spider implements Runnable, Task {
             logger.error("Thread interrupted when sleep",e);
         }
     }
-
+    //处理页面，添加新的请求
     protected void extractAndAddRequests(Page page, boolean spawnUrl) {
         if (spawnUrl && CollectionUtils.isNotEmpty(page.getTargetRequests())) {
             for (Request request : page.getTargetRequests()) {
@@ -463,11 +471,12 @@ public class Spider implements Runnable, Task {
             }
         }
     }
-
+//    添加请求
     private void addRequest(Request request) {
         if (site.getDomain() == null && request != null && request.getUrl() != null) {
             site.setDomain(UrlUtils.getDomain(request.getUrl()));
         }
+        //去重添加进
         scheduler.push(request, this);
     }
 
@@ -476,7 +485,7 @@ public class Spider implements Runnable, Task {
             throw new IllegalStateException("Spider is already running!");
         }
     }
-
+//    异步执行
     public void runAsync() {
         Thread thread = new Thread(this);
         thread.setDaemon(false);
@@ -548,7 +557,7 @@ public class Spider implements Runnable, Task {
         signalNewUrl();
         return this;
     }
-
+//等待新的请求链接
     private void waitNewUrl() {
         newUrlLock.lock();
         try {
@@ -563,7 +572,7 @@ public class Spider implements Runnable, Task {
             newUrlLock.unlock();
         }
     }
-
+//通知已添加新的链接
     private void signalNewUrl() {
         try {
             newUrlLock.lock();
