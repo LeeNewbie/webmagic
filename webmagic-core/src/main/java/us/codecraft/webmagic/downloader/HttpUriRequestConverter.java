@@ -38,6 +38,14 @@ public class HttpUriRequestConverter {
         return httpClientRequestContext;
     }
 
+    /**
+     * httpclient context
+     *
+     * @param request
+     * @param site
+     * @param proxy
+     * @return
+     */
     private HttpClientContext convertHttpClientContext(Request request, Site site, Proxy proxy) {
         HttpClientContext httpContext = new HttpClientContext();
         if (proxy != null && proxy.getUsername() != null) {
@@ -57,6 +65,14 @@ public class HttpUriRequestConverter {
         return httpContext;
     }
 
+    /**
+     * http request
+     *
+     * @param request
+     * @param site
+     * @param proxy
+     * @return
+     */
     private HttpUriRequest convertHttpUriRequest(Request request, Site site, Proxy proxy) {
         RequestBuilder requestBuilder = selectRequestMethod(request).setUri(request.getUrl());
         if (site.getHeaders() != null) {

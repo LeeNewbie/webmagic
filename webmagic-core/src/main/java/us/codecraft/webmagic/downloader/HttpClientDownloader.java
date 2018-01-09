@@ -34,15 +34,25 @@ import java.util.Map;
 public class HttpClientDownloader extends AbstractDownloader {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
-
+    /**
+     * 根据主域名-httpclient实体
+     */
     private final Map<String, CloseableHttpClient> httpClients = new HashMap<String, CloseableHttpClient>();
-
+    /**
+     * httpclient生成器
+     */
     private HttpClientGenerator httpClientGenerator = new HttpClientGenerator();
-
+    /**
+     * 封装请求转换器
+     */
     private HttpUriRequestConverter httpUriRequestConverter = new HttpUriRequestConverter();
-    
+    /**
+     * 代理ip提供
+     */
     private ProxyProvider proxyProvider;
-
+    /**
+     * 保留响应头
+     */
     private boolean responseHeader = true;
 
     public void setHttpUriRequestConverter(HttpUriRequestConverter httpUriRequestConverter) {
@@ -53,7 +63,14 @@ public class HttpClientDownloader extends AbstractDownloader {
         this.proxyProvider = proxyProvider;
     }
 
+    /**
+     * 根据域名获取对应的httpclient实例
+     *
+     * @param site
+     * @return
+     */
     private CloseableHttpClient getHttpClient(Site site) {
+
         if (site == null) {
             return httpClientGenerator.getClient(null);
         }
@@ -71,6 +88,13 @@ public class HttpClientDownloader extends AbstractDownloader {
         return httpClient;
     }
 
+    /**
+     * 下载页面
+     *
+     * @param request request
+     * @param task task
+     * @return Page
+     */
     @Override
     public Page download(Request request, Task task) {
         if (task == null || task.getSite() == null) {
@@ -79,16 +103,19 @@ public class HttpClientDownloader extends AbstractDownloader {
         CloseableHttpResponse httpResponse = null;
         CloseableHttpClient httpClient = getHttpClient(task.getSite());
         Proxy proxy = proxyProvider != null ? proxyProvider.getProxy(task) : null;
+        //转换
         HttpClientRequestContext requestContext = httpUriRequestConverter.convert(request, task.getSite(), proxy);
         Page page = Page.fail();
         try {
             httpResponse = httpClient.execute(requestContext.getHttpUriRequest(), requestContext.getHttpClientContext());
             page = handleResponse(request, task.getSite().getCharset(), httpResponse, task);
+            // TODO: 2018/1/8 0008  页面下载成功时对请求的处理
             onSuccess(request);
             logger.info("downloading page success {}", request.getUrl());
             return page;
         } catch (IOException e) {
             logger.warn("download page {} error", request.getUrl(), e);
+            // TODO: 2018/1/8 0008  页面下载失败时对请求的处理
             onError(request);
             return page;
         } finally {

@@ -419,10 +419,13 @@ public class Spider implements Runnable, Task {
     //处理下载成功页面
     private void onDownloadSuccess(Request request, Page page) {
         if (site.getAcceptStatCode().contains(page.getStatusCode())){
+            //解析页面
             pageProcessor.process(page);
+            //新请求
             extractAndAddRequests(page, spawnUrl);
             if (!page.getResultItems().isSkip()) {
                 for (Pipeline pipeline : pipelines) {
+                    //持久化结果
                     pipeline.process(page.getResultItems(), this);
                 }
             }
