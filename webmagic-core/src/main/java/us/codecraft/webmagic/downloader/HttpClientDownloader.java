@@ -115,7 +115,7 @@ public class HttpClientDownloader extends AbstractDownloader {
             return page;
         } catch (IOException e) {
             logger.warn("download page {} error", request.getUrl(), e);
-            // TODO: 2018/1/8 0008  页面下载失败时对请求的处理
+            // TODO: 2018/1/8 0008  页面下载失败时对请求的处理-例如记录失败次数
             onError(request);
             return page;
         } finally {
