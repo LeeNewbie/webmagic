@@ -1,9 +1,8 @@
 package us.codecraft.webmagic.proxy;
 
 /**
- * 
+ * 代理ip
  */
-
 public class Proxy {
 
 	private String host;
