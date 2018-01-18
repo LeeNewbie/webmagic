@@ -43,7 +43,9 @@ public class DelayQueueScheduler extends PriorityScheduler {
 
         @Override
         public long getDelay(TimeUnit unit) {
-            long convert = unit.convert(TimeUnit.MILLISECONDS.convert(time, timeUnit) - System.currentTimeMillis() + startTime, TimeUnit.MILLISECONDS);
+            long convert = unit.convert(TimeUnit.MILLISECONDS.convert(time, timeUnit)
+                    - System.currentTimeMillis()
+                    + startTime, TimeUnit.MILLISECONDS);
             return convert;
         }
 

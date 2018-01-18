@@ -61,10 +61,10 @@ public class RedisPrioritySchedulerTest
         Assert.assertEquals(GRequest.getExtra("name"), request.getExtra("name"));
 
         Assert.assertEquals(FBRequest.getUrl(), request1.getUrl());
-        Assert.assertEquals(FBRequest.getExtra("name"), request.getExtra("name"));
+        Assert.assertEquals(FBRequest.getExtra("name"), request1.getExtra("name"));
 
         Assert.assertEquals(TRequest.getUrl(), request2.getUrl());
-        Assert.assertEquals(TRequest.getExtra("name"), request.getExtra("name"));
+        Assert.assertEquals(TRequest.getExtra("name"), request2.getExtra("name"));
     }
 
 }

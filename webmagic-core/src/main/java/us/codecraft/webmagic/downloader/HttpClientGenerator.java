@@ -35,7 +35,9 @@ import java.util.Map;
 public class HttpClientGenerator {
 	
 	private transient Logger logger = LoggerFactory.getLogger(getClass());
-	
+    /**
+     * 连接池
+     */
     private PoolingHttpClientConnectionManager connectionManager;
 
     public HttpClientGenerator() {
@@ -49,7 +51,8 @@ public class HttpClientGenerator {
 
 	private SSLConnectionSocketFactory buildSSLConnectionSocketFactory() {
 		try {
-			return new SSLConnectionSocketFactory(createIgnoreVerifySSL()); // 优先绕过安全证书
+            // 优先绕过安全证书
+			return new SSLConnectionSocketFactory(createIgnoreVerifySSL());
 		} catch (KeyManagementException e) {
             logger.error("ssl connection fail", e);
         } catch (NoSuchAlgorithmException e) {
@@ -103,6 +106,7 @@ public class HttpClientGenerator {
         if (site.isUseGzip()) {
             httpClientBuilder.addInterceptorFirst(new HttpRequestInterceptor() {
 
+                @Override
                 public void process(
                         final HttpRequest request,
                         final HttpContext context) throws HttpException, IOException {

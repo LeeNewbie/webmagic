@@ -14,7 +14,7 @@ import us.codecraft.webmagic.Task;
  */
 public class SeleniumDownloaderTest {
 
-	private String chromeDriverPath = "/Users/yihua/Downloads/chromedriver";
+	private String chromeDriverPath = "D:\\dirver\\chromedriver.exe";
 
 	@Ignore("need chrome driver")
 	@Test
@@ -22,7 +22,7 @@ public class SeleniumDownloaderTest {
 		SeleniumDownloader seleniumDownloader = new SeleniumDownloader(chromeDriverPath);
 		long time1 = System.currentTimeMillis();
 		for (int i = 0; i < 100; i++) {
-			Page page = seleniumDownloader.download(new Request("http://huaban.com/"), new Task() {
+			Page page = seleniumDownloader.download(new Request("http://www.baidu.com/"), new Task() {
 				@Override
 				public String getUUID() {
 					return "huaban.com";

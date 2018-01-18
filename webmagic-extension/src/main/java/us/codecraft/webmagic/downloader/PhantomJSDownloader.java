@@ -21,7 +21,7 @@ public class PhantomJSDownloader extends AbstractDownloader {
 
     private static Logger logger = LoggerFactory.getLogger(PhantomJSDownloader.class);
     private static String crawlJsPath;
-    private static String phantomJsCommand = "phantomjs"; // default
+    private static String phantomJsCommand = "D:\\dirver\\phantomjs-2.1.1-windows\\bin\\phantomjs"; // default
 
     private int retryNum;
     private int threadNum;

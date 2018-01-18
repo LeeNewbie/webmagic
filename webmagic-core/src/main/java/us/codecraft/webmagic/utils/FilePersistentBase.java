@@ -12,7 +12,7 @@ public class FilePersistentBase {
 
     protected String path;
 
-    public static String PATH_SEPERATOR = "/";
+    public static String PATH_SEPERATOR = File.pathSeparator;
 
     static {
         String property = System.getProperties().getProperty("file.separator");

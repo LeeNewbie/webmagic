@@ -23,12 +23,12 @@ public class ProcessorBenchmark {
         page.setUrl(new PlainText("http://my.oschina.net/flashsword/blog"));
         page.setHtml(new Html(html));
         long time = System.currentTimeMillis();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 2000; i++) {
             modelPageProcessor.process(page);
         }
         System.out.println(System.currentTimeMillis() - time);
         time = System.currentTimeMillis();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 2000; i++) {
             modelPageProcessor.process(page);
         }
         System.out.println(System.currentTimeMillis() - time);

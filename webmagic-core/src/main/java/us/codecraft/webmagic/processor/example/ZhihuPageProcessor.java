@@ -5,6 +5,9 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author code4crafter@gmail.com <br>
  * @since 0.6.0
@@ -19,7 +22,7 @@ public class ZhihuPageProcessor implements PageProcessor {
         page.putField("title", page.getHtml().xpath("//h1[@class='QuestionHeader-title']/text()").toString());
         page.putField("question", page.getHtml().xpath("//div[@class='QuestionRichText']//tidyText()").toString());
         page.putField("answer", page.getHtml().xpath("//div[@class='QuestionAnswer-content']/tidyText()").toString());
-        if (page.getResultItems().get("title")==null){
+        if (page.getResultItems().get("title") == null) {
             //skip this page
             page.setSkip(true);
         }
@@ -33,4 +36,5 @@ public class ZhihuPageProcessor implements PageProcessor {
     public static void main(String[] args) {
         Spider.create(new ZhihuPageProcessor()).addUrl("https://www.zhihu.com/explore").run();
     }
+
 }

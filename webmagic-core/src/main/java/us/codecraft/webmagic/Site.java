@@ -78,7 +78,7 @@ public class Site {
      */
     public Site addCookie(String domain, String name, String value) {
         if (!cookies.containsKey(domain)){
-            cookies.put(domain,new HashMap<String, String>());
+            cookies.put(domain,new HashMap<String, String>(10));
         }
         cookies.get(domain).put(name, value);
         return this;
@@ -347,23 +347,45 @@ public class Site {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Site site = (Site) o;
 
-        if (cycleRetryTimes != site.cycleRetryTimes) return false;
-        if (retryTimes != site.retryTimes) return false;
-        if (sleepTime != site.sleepTime) return false;
-        if (timeOut != site.timeOut) return false;
-        if (acceptStatCode != null ? !acceptStatCode.equals(site.acceptStatCode) : site.acceptStatCode != null)
+        if (cycleRetryTimes != site.cycleRetryTimes) {
             return false;
-        if (charset != null ? !charset.equals(site.charset) : site.charset != null) return false;
-        if (defaultCookies != null ? !defaultCookies.equals(site.defaultCookies) : site.defaultCookies != null)
+        }
+        if (retryTimes != site.retryTimes) {
             return false;
-        if (domain != null ? !domain.equals(site.domain) : site.domain != null) return false;
-        if (headers != null ? !headers.equals(site.headers) : site.headers != null) return false;
-        if (userAgent != null ? !userAgent.equals(site.userAgent) : site.userAgent != null) return false;
+        }
+        if (sleepTime != site.sleepTime) {
+            return false;
+        }
+        if (timeOut != site.timeOut) {
+            return false;
+        }
+        if (acceptStatCode != null ? !acceptStatCode.equals(site.acceptStatCode) : site.acceptStatCode != null) {
+            return false;
+        }
+        if (charset != null ? !charset.equals(site.charset) : site.charset != null) {
+            return false;
+        }
+        if (defaultCookies != null ? !defaultCookies.equals(site.defaultCookies) : site.defaultCookies != null) {
+            return false;
+        }
+        if (domain != null ? !domain.equals(site.domain) : site.domain != null) {
+            return false;
+        }
+        if (headers != null ? !headers.equals(site.headers) : site.headers != null) {
+            return false;
+        }
+        if (userAgent != null ? !userAgent.equals(site.userAgent) : site.userAgent != null) {
+            return false;
+        }
 
         return true;
     }

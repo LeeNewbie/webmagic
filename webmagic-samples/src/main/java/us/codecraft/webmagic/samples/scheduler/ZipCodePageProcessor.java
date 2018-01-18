@@ -20,6 +20,7 @@ import static us.codecraft.webmagic.selector.Selectors.xpath;
 public class ZipCodePageProcessor implements PageProcessor {
 
     private Site site = Site.me().setCharset("gb2312")
+            .setUserAgent("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36")
             .setSleepTime(100);
 
     @Override
@@ -37,8 +38,8 @@ public class ZipCodePageProcessor implements PageProcessor {
     private void processCountry(Page page) {
         List<String> provinces = page.getHtml().xpath("//*[@id=\"newAlexa\"]/table/tbody/tr/td").all();
         for (String province : provinces) {
-            String link = xpath("//@href").select(province);
-            String title = xpath("/text()").select(province);
+            String link = "http://www.ip138.com"+xpath("//a/@href").select(province);
+            String title = xpath("//a/text()").select(province);
             Request request = new Request(link).setPriority(0).putExtra("province", title);
             page.addTargetRequest(request);
         }
@@ -47,13 +48,16 @@ public class ZipCodePageProcessor implements PageProcessor {
     private void processProvince(Page page) {
         //这里仅靠xpath没法精准定位，所以使用正则作为筛选，不符合正则的会被过滤掉
         List<String> districts = page.getHtml().xpath("//body/table/tbody/tr[@bgcolor=\"#ffffff\"]").all();
-        Pattern pattern = Pattern.compile("<td>([^<>]+)</td>.*?href=\"(.*?)\"",Pattern.DOTALL);
+        Pattern pattern = Pattern.compile("<td>([^<>]+)</td>.*?href=\"(.*?)\"", Pattern.DOTALL);
         for (String district : districts) {
             Matcher matcher = pattern.matcher(district);
             while (matcher.find()) {
                 String title = matcher.group(1);
-                String link = matcher.group(2);
-                Request request = new Request(link).setPriority(1).putExtra("province", page.getRequest().getExtra("province")).putExtra("district", title);
+                String link = "http://www.ip138.com" + matcher.group(2);
+                Request request = new Request(link)
+                        .setPriority(1)
+                        .putExtra("province", page.getRequest().getExtra("province"))
+                        .putExtra("district", title);
                 page.addTargetRequest(request);
             }
         }
@@ -62,7 +66,7 @@ public class ZipCodePageProcessor implements PageProcessor {
     private void processDistrict(Page page) {
         String province = page.getRequest().getExtra("province").toString();
         String district = page.getRequest().getExtra("district").toString();
-        String zipCode = page.getHtml().regex("<h2>邮编：(\\d+)</h2>").toString();
+        String zipCode = page.getHtml().regex("<div>\\n\\s+邮编：(\\d+)\\n\\s+</div>").toString();
         page.putField("result", StringUtils.join(new String[]{province, district,
                 zipCode}, "\t"));
         List<String> links = page.getHtml().links().regex("http://www\\.ip138\\.com/\\d{6}[/]?$").all();

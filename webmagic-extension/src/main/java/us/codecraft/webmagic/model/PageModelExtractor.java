@@ -290,6 +290,7 @@ class PageModelExtractor {
                         return null;
                     }
                     if (fieldExtractor.getObjectFormatter() != null) {
+                        //非基本数据类型转换
                         Object converted = convert(value, fieldExtractor.getObjectFormatter());
                         if (converted == null && fieldExtractor.isNotNull()) {
                             return null;

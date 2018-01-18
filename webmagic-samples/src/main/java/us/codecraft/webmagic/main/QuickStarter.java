@@ -1,5 +1,6 @@
 package us.codecraft.webmagic.main;
 
+import us.codecraft.webmagic.SimpleHttpClient;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.model.OOSpider;
 import us.codecraft.webmagic.model.samples.IteyeBlog;
@@ -38,7 +39,11 @@ public class QuickStarter {
         key = readKey(key);
         System.out.println("The demo started and will last 20 seconds...");
         //Start spider
-        OOSpider.create(Site.me(), clazzMap.get(key)).addUrl(urlMap.get(key)).addPipeline(new MultiPagePipeline()).addPipeline(new ConsolePipeline()).runAsync();
+        OOSpider.create(Site.me(), clazzMap.get(key))
+                .addUrl(urlMap.get(key))
+                .addPipeline(new MultiPagePipeline())
+                .addPipeline(new ConsolePipeline())
+                .run();
 
         try {
             Thread.sleep(20000);

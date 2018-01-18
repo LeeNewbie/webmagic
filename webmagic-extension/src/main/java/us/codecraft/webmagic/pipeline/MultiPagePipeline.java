@@ -19,7 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Experimental
 public class MultiPagePipeline implements Pipeline {
-
     private DoubleKeyMap<String, String, Boolean> pageMap = new DoubleKeyMap<String, String, Boolean>(ConcurrentHashMap.class);
 
     private DoubleKeyMap<String, String, MultiPageModel> objectMap = new DoubleKeyMap<String, String, MultiPageModel>(ConcurrentHashMap.class);

@@ -1,6 +1,7 @@
 package us.codecraft.webmagic.selector;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.jsoup.Jsoup;
 
 import java.util.ArrayList;
 import java.util.List;

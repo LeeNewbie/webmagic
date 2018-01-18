@@ -9,6 +9,7 @@ import java.util.List;
  * parse json
  * @author code4crafter@gmail.com
  * @since 0.5.0
+ * http://blog.csdn.net/luxideyao/article/details/77802389
  */
 public class Json extends PlainText {
 

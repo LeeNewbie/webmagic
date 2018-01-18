@@ -40,7 +40,8 @@ public class RedisScheduler extends DuplicateRemovedScheduler implements Monitor
         try {
             jedis.del(getSetKey(task));
         } finally {
-            pool.returnResource(jedis);
+            jedis.close();
+//            pool.returnResource(jedis);
         }
     }
 
