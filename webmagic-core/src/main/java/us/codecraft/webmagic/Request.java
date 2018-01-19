@@ -22,6 +22,10 @@ public class Request implements Serializable {
 
     private String url;
 
+    private boolean requestAsAFile = false;
+
+    private String requestFileSavePath;
+
     private String method;
 
     private HttpRequestBody requestBody;
@@ -160,6 +164,24 @@ public class Request implements Serializable {
 
     public void setRequestBody(HttpRequestBody requestBody) {
         this.requestBody = requestBody;
+    }
+
+    public boolean isRequestAsAFile() {
+        return requestAsAFile;
+    }
+
+    public Request setRequestAsAFile(boolean requestAsAFile) {
+        this.requestAsAFile = requestAsAFile;
+        return this;
+    }
+
+    public String getRequestFileSavePath() {
+        return requestFileSavePath;
+    }
+
+    public Request setRequestFileSavePath(String requestFileSavePath) {
+        this.requestFileSavePath = requestFileSavePath;
+        return this;
     }
 
     @Override

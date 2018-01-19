@@ -1,6 +1,9 @@
 package us.codecraft.webmagic.downloader;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.annotation.ThreadSafe;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -18,6 +21,8 @@ import us.codecraft.webmagic.selector.PlainText;
 import us.codecraft.webmagic.utils.CharsetUtils;
 import us.codecraft.webmagic.utils.HttpClientUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -54,6 +59,12 @@ public class HttpClientDownloader extends AbstractDownloader {
      * 保留响应头
      */
     private boolean responseHeader = true;
+    /**
+     * 如果文件存在 则删除后保存
+     */
+    private boolean fileForceSave = true;
+
+    public static final String BASE_FILE_SAVE_PATH = "D:\\data\\";
 
     public void setHttpUriRequestConverter(HttpUriRequestConverter httpUriRequestConverter) {
         this.httpUriRequestConverter = httpUriRequestConverter;
@@ -92,7 +103,7 @@ public class HttpClientDownloader extends AbstractDownloader {
      * 下载页面
      *
      * @param request request
-     * @param task task
+     * @param task    task
      * @return Page
      */
     @Override
@@ -108,14 +119,19 @@ public class HttpClientDownloader extends AbstractDownloader {
         Page page = Page.fail();
         try {
             httpResponse = httpClient.execute(requestContext.getHttpUriRequest(), requestContext.getHttpClientContext());
-            page = handleResponse(request, task.getSite().getCharset(), httpResponse, task);
+            if (request.isRequestAsAFile()) {
+                // TODO: 2018/1/19 0019 下载文件
+                page = handleFileResponse(request, task.getSite().getCharset(), httpResponse, task);
+            } else {
+                page = handleResponse(request, task.getSite().getCharset(), httpResponse, task);
+            }
             // TODO: 2018/1/8 0008  页面下载成功时对请求的处理
             onSuccess(request);
             logger.info("downloading page success {}", request.getUrl());
             return page;
         } catch (IOException e) {
             logger.warn("download page {} error", request.getUrl(), e);
-            // TODO: 2018/1/8 0008  页面下载失败时对请求的处理-例如记录失败次数
+            // TODO: 2018/1/8 0008  页面下载失败时对请 求的处理-例如记录失败次数
             onError(request);
             return page;
         } finally {
@@ -146,6 +162,40 @@ public class HttpClientDownloader extends AbstractDownloader {
             page.setHeaders(HttpClientUtils.convertHeaders(httpResponse.getAllHeaders()));
         }
         return page;
+    }
+
+    protected Page handleFileResponse(Request request, String charset, HttpResponse httpResponse, Task task) throws IOException {
+        downloadFile(httpResponse, request, task);
+        Page page = new Page();
+        page.setRequest(request);
+        page.setStatusCode(httpResponse.getStatusLine().getStatusCode());
+        page.setDownloadSuccess(true);
+        if (responseHeader) {
+            page.setHeaders(HttpClientUtils.convertHeaders(httpResponse.getAllHeaders()));
+        }
+        return page;
+    }
+
+    private void downloadFile(HttpResponse httpResponse, Request request, Task task) throws IOException {
+        String path = request.getRequestFileSavePath();
+        if (StringUtils.isEmpty(path)) {
+            path = BASE_FILE_SAVE_PATH
+                    + task.getUUID() + File.separator
+                    + request.getUrl().substring(request.getUrl().lastIndexOf("/")+1);
+        }
+        HttpEntity entity = httpResponse.getEntity();
+        File file = new File(path);
+        if (file.exists() && fileForceSave) {
+            FileUtils.forceDelete(file);
+        }
+        file.getParentFile().mkdirs();
+        file.createNewFile();
+        FileOutputStream fos = new FileOutputStream(file);
+        if (entity != null) {
+            entity.writeTo(fos);
+        }
+        fos.flush();
+        fos.close();
     }
 
     private String getResponseContent(String charset, HttpResponse httpResponse) throws IOException {
