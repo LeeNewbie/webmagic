@@ -120,9 +120,10 @@ public class HttpClientDownloader extends AbstractDownloader {
         try {
             httpResponse = httpClient.execute(requestContext.getHttpUriRequest(), requestContext.getHttpClientContext());
             if (request.isRequestAsAFile()) {
-                // TODO: 2018/1/19 0019 下载文件
+                //下载文件
                 page = handleFileResponse(request, task.getSite().getCharset(), httpResponse, task);
             } else {
+                //下载页面
                 page = handleResponse(request, task.getSite().getCharset(), httpResponse, task);
             }
             // TODO: 2018/1/8 0008  页面下载成功时对请求的处理
