@@ -9,10 +9,20 @@ public class Proxy {
 	private int port;
 	private String username;
 	private String password;
+	private long timeout;
+
+	public Proxy() {
+	}
 
 	public Proxy(String host, int port) {
 		this.host = host;
 		this.port = port;
+	}
+
+	public Proxy(String host, int port, long timeout) {
+		this.host = host;
+		this.port = port;
+		this.timeout = timeout;
 	}
 
 	public Proxy(String host, int port, String username, String password) {
@@ -36,6 +46,30 @@ public class Proxy {
 
 	public String getPassword() {
 		return password;
+	}
+
+	public long getTimeout() {
+		return timeout;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setTimeout(long timeout) {
+		this.timeout = timeout;
 	}
 
 	@Override
