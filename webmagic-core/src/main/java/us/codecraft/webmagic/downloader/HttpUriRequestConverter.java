@@ -88,6 +88,10 @@ public class HttpUriRequestConverter {
                     .setConnectTimeout(site.getTimeOut())
                     .setCookieSpec(CookieSpecs.STANDARD);
         }
+        //对下载文件的请求socket超时处理
+        if (request.isRequestAsAFile()) {
+            requestConfigBuilder.setSocketTimeout(request.getRequestTimeOut());
+        }
 
         if (proxy != null) {
             requestConfigBuilder.setProxy(new HttpHost(proxy.getHost(), proxy.getPort()));
