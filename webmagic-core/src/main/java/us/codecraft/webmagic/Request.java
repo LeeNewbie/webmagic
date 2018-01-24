@@ -24,6 +24,8 @@ public class Request implements Serializable {
 
     private boolean requestAsAFile = false;
 
+    private int requestTimeOut = 5000;
+
     private String requestFileSavePath;
 
     private String method;
@@ -181,6 +183,15 @@ public class Request implements Serializable {
 
     public Request setRequestFileSavePath(String requestFileSavePath) {
         this.requestFileSavePath = requestFileSavePath;
+        return this;
+    }
+
+    public int getRequestTimeOut() {
+        return requestTimeOut;
+    }
+
+    public Request setRequestTimeOut(int requestTimeOut) {
+        this.requestTimeOut = requestTimeOut;
         return this;
     }
 
