@@ -193,8 +193,8 @@ public class RedisProxyPool {
         public void run() {
             logger.info("检查代理池中的代理是否存活...");
             Set<String> proxys = getAllProxy();
-            logger.info("当前代理池中代理数量: {}", proxys.size());
             if (proxys != null) {
+                logger.info("当前代理池中代理数量: {}", proxys.size());
                 ExecutorService executorSevice = Executors.newFixedThreadPool(5);
                 for (String s : proxys) {
                     executorSevice.execute(new ValidateProxyThread(s));
@@ -210,9 +210,16 @@ public class RedisProxyPool {
                         e.printStackTrace();
                     }
                 }
+                proxys = getAllProxy();
+                if (proxys != null) {
+                    logger.info("检查后,代理池中代理数量: {}", proxys.size());
+                } else {
+                    logger.info("当前代理池中暂无代理");
+                }
+            } else {
+                logger.info("当前代理池中暂无代理");
             }
-            proxys = getAllProxy();
-            logger.info("检查后,代理池中代理数量: {}", proxys.size());
+
         }
     };
 
