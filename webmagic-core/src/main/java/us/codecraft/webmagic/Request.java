@@ -51,6 +51,8 @@ public class Request implements Serializable {
      */
     private long priority;
 
+    private boolean allowDuplication = false;
+
     public Request() {
     }
 
@@ -192,6 +194,15 @@ public class Request implements Serializable {
 
     public Request setRequestTimeOut(int requestTimeOut) {
         this.requestTimeOut = requestTimeOut;
+        return this;
+    }
+
+    public boolean isAllowDuplication() {
+        return allowDuplication;
+    }
+
+    public Request setAllowDuplication(boolean allowDuplication) {
+        this.allowDuplication = allowDuplication;
         return this;
     }
 
